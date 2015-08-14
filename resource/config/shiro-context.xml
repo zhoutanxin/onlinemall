@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+	default-lazy-init="true">
+
+	<description>Shiro安全配置(单点登录需要shiro-cas-1.2.0.jar)</description>
+	<!-- Shiro Filter -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="http://localhost:8090/cas/login?service=http://localhost:8080/console/v_login" />  
+		<property name="filterChainDefinitions">
+			<value>
+				/v_login* = anon
+				/login* = anon
+				/admin/** = authc
+			    /** = authc  
+			</value>
+		</property>
+	</bean>
+	
+	<!-- 开启Shiro注解的Spring配置方式的beans。在lifecycleBeanPostProcessor之后运行 -->
+    <bean id="lifecycleBeanPostProcessor"  class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+        
+	<!-- Shiro's main business-tier object for web-enabled applications -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realms">
+	         <list>
+	             <ref bean="shiroDbRealm" />
+	         </list>
+	     </property>		
+		<property name="cacheManager" ref="shiroEhcacheManager" />
+		<!-- 
+	     <property name="sessionMode" value="native" />
+		<property name="sessionManager" ref="sessionManager"/>
+		 -->
+	</bean>
+	<bean id="shiroDbRealm" class="com.xinnet.common.shiro.UserRealm" >
+		<property name="userBiz" ref="userServiceImpl"/>
+	</bean>
+	<!-- 項目自定义的Realm, 所有userService依赖的dao都需要用depends-on声明
+	<bean id="personnelRealm" class="c om.doadway.dwcom.manager.shiro.PersonnelRealm" depends-on="personnelMapper,personnelExtMapper">
+		<property name="personnelBiz" ref="personnelBizImpl"/>
+	</bean>
+	 -->
+	
+    <!-- Session Cookie模板
+	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">  
+	    <constructor-arg value="sid"/>  
+	    <property name="httpOnly" value="true"/>  
+	    <property name="maxAge" value="180000"/>  
+	</bean>  
+     -->  
+	<!-- 会话ID生成器
+	<bean id="sessionIdGenerator"   class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>  
+	 -->  
+    <!-- Session控制
+    <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
+        <property name="interval" value="1800000"/>
+    </bean>
+     
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+        <property name="activeSessionsCacheName" value="activeSessionCache"/>
+        <property name="sessionIdGenerator" ref="sessionIdGenerator"/>  
+    </bean>
+     
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="sessionDAO" ref="sessionDAO"/>
+        <property name="globalSessionTimeout" value="3600000"/>
+        <property name="deleteInvalidSessions" value="true"/> 
+        <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <property name="sessionIdCookieEnabled" value="true"/>  
+    	<property name="sessionIdCookie" ref="sessionIdCookie"/>  
+    </bean>
+     -->
+    	
+	<!-- 用户授权信息Cache, 采用EhCache -->
+	<bean id="shiroEhcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="cacheManager"/>
+		<property name="cacheManagerConfigFile" value="classpath:/config/ehcache-config.xml"/>
+	</bean>
+	
+        
+</beans>

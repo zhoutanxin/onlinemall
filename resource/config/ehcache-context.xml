@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring   
+    http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd ">
+
+	<ehcache:annotation-driven />
+
+	<ehcache:config cache-manager="cacheManager">
+		<ehcache:evict-expired-elements
+			interval="60" />
+	</ehcache:config>
+
+	<bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:/config/ehcache-config.xml" />
+	</bean>
+  	 <!-- find/create cache拦截器 -->  
+     <!-- 定义ehCache的工厂，并设置所使用的Cache name -->  
+    <bean id="ehCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">  
+      <property name="cacheManager">  
+        <ref local="cacheManager"/>  
+      </property>  
+      <property name="cacheName">  
+          <value>baseCache</value>  
+      </property>  
+    </bean>  
+    <bean id="methodCacheInterceptor" class="com.doadway.framework.cache.MethodCacheInterceptor" depends-on="sqlSession">  
+      <property name="cache">  
+        <ref local="ehCache" />  
+      </property>  
+    </bean>  
+    <bean id="methodCachePointCut" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">  
+      <property name="advice">  
+        <ref local="methodCacheInterceptor"/>  
+      </property>  
+      <property name="patterns">  
+        <list>  
+            <value>com.*.*.biz.impl.*find.*</value>  
+            <value>com.*.*.biz.impl.*create.*</value>  
+            <value>com.*.*.dao.*select.*</value>  
+        </list>  
+      </property>  
+    </bean>
+    <!-- flush cache拦截器 -->  
+    <bean id="methodCacheAfterAdvice" class="com.doadway.framework.cache.MethodCacheAfterAdvice">  
+      <property name="cache">  
+        <ref local="ehCache" />  
+      </property>  
+    </bean>  
+    <bean id="methodCachePointCutAdvice" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">  
+      <property name="advice">  
+        <ref local="methodCacheAfterAdvice"/>  
+      </property>  
+      <property name="patterns">  
+        <list>  
+          <value>com.*.*.biz.impl.*batch.*</value>  
+          <value>com.*.*.biz.impl.*update.*</value>  
+          <value>com.*.*.biz.impl.*delete.*</value>  
+          <value>com.*.*.biz.impl.*save.*</value>
+          <value>com.*.*.dao.*insert.*</value>  
+          <value>com.*.*.dao.*update.*</value>  
+          <value>com.*.*.dao.*delete.*</value>  
+        </list>  
+      </property>  
+    </bean>          
+</beans>

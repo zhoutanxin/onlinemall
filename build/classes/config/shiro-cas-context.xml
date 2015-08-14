@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+	default-lazy-init="true">
+     <description>单点登录需要shiro-cas配置</description>
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">  
+        <property name="securityManager" ref="securityManager"/>  
+        <!-- 设定角色的登录链接，这里为cas登录页面的链接可配置回调地址  -->  
+        <!--访问console 时，如果未通过cas认证将会跳转到认证中心，通过得跳转到下面配置的successUrl 里的地址 -->  
+        <property name="loginUrl" value="http://localhost:8090/cas/login?service=http://localhost:8080/console/v_login" />  
+         <property name="successUrl" value="http://localhost:8080/console/welcome" /> 
+        <property name="filters">  
+            <util:map>  
+                <!-- 添加casFilter到shiroFilter -->  
+                <entry key="casFilter" value-ref="casFilter"/>  
+            </util:map>  
+        </property>   
+        <property name="filterChainDefinitions">  
+            <value>                 
+                /** = authc  
+                /admin/** =authc 
+            </value>  
+        </property>  
+    </bean>  
+     <bean id="casFilter" class="org.apache.shiro.cas.CasFilter">  
+        <!-- 配置验证错误时的失败页面  -->  
+        <property name="failureUrl" value="/error.jsp"/>  
+    </bean>  
+       
+    <!-- 开启Shiro注解的Spring配置方式的beans。在lifecycleBeanPostProcessor之后运行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>  
+    
+     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">      
+        <property name="realm" ref="myCasRealm"/>  
+        <property name="subjectFactory" ref="casSubjectFactory"/>
+        <property name="cacheManager" ref="shiroEhcacheManager" />  
+    </bean>  
+     <bean id="myCasRealm" class="com.xinnet.common.shiro.MyCasRealm">  
+      	<property name="userBiz" ref="userServiceImpl"/>
+        <property name="casServerUrlPrefix" value="http://localhost:8090/cas" />  <!--该地址为cas server地址  
+        <property name="casService" value="http://localhost:8080/client1/shiro-cas" /> <!-- 该地址为client1 的访问地址+ 下面配置的cas  filter -->    
+    </bean>       
+      
+    <!-- 如果要实现cas的remember me的功能，需要用到下面这个bean，并设置到securityManager的subjectFactory中 -->  
+    <bean id="casSubjectFactory" class="org.apache.shiro.cas.CasSubjectFactory"/>  
+  
+    <!-- 用户授权信息Cache, 采用EhCache -->
+	<bean id="shiroEhcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="cacheManager"/>
+		<property name="cacheManagerConfigFile" value="classpath:/config/ehcache-config.xml"/>
+	</bean>
+</beans>  

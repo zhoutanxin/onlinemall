@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:util="http://www.springframework.org/schema/util" 
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:tx="http://www.springframework.org/schema/tx" 
+		xmlns:mvc="http://www.springframework.org/schema/mvc"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+				http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+				http://www.springframework.org/schema/beans 
+				http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+				http://www.springframework.org/schema/context 
+				http://www.springframework.org/schema/context/spring-context-3.1.xsd
+				http://www.springframework.org/schema/tx 
+				http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+				http://www.springframework.org/schema/aop
+				http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+				http://www.springframework.org/schema/util 
+				http://www.springframework.org/schema/util/spring-util-3.1.xsd "  default-lazy-init="false">
+		<context:annotation-config />	
+		<context:component-scan base-package="com.enation.app.base.core.action" use-default-filters="false">
+	    			<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	    </context:component-scan>					
+	    <mvc:default-servlet-handler default-servlet-name="default"/>
+   	<!-- 默认/访问首页Controller,根据需要改成其他url 
+	<mvc:view-controller path="/" view-name="forward:/v_login" /-->
+	
+ 	<!-- Spring MVC声明式参数验证部分开始 -->
+	<!-- 国际化的消息资源文件 -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<!-- 在web环境中一定要定位到classpath 否则默认到当前web应用下找 -->
+				<value>classpath:/messages/validate-messages</value>
+				<value>classpath:/language/messages</value>
+			</list>
+		</property>
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="cacheSeconds" value="-1"/>
+	</bean>    
+	<!-- 自动注册了validator ConversionService -->
+	<bean id="conversion-service" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" />
+	<mvc:annotation-driven validator="validator" conversion-service="conversion-service" />
+	<!-- 以下 validator ConversionService 在使用 mvc:annotation-driven 会 自动注册 -->
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		<!-- 如果不加默认到 使用classpath下的 ValidationMessages.properties -->
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+	<!-- Spring MVC声明式参数验证配置结束 -->
+
+    <!-- REST风格,公共静态资源映射     -->
+    <mvc:resources  mapping="/public/**" location="/WEB-INF/public/"/>  
+    <mvc:resources  mapping="/public/static/**" location="/WEB-INF/public/static/"/>  
+    <mvc:resources  mapping="/public/thirdparty/**" location="/WEB-INF/public/thirdparty/"/> 
+    <mvc:resources  mapping="/img/**" location="/WEB-INF/public/static/img/"/>     
+    <mvc:resources  mapping="/views/**" location="/WEB-INF/views/"/>     
+    <mvc:resources  mapping="/views/install/images/**" location="/WEB-INF/views/install/images/"/>     
+    <mvc:resources  mapping="/install/images/**" location="/WEB-INF/views/install/images/"/>     
+    <mvc:resources  mapping="/r/**" location="/WEB-INF/r/"/>     
+    <mvc:resources  mapping="/admin_sys/**" location="/WEB-INF/views/admin_sys/"/>     
+	    
+	<!-- velocity环境配置 -->  	
+	<bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">  
+	    <property name="resourceLoaderPath" value="/WEB-INF/views/"/>  
+	    <property name= "velocityProperties">        
+	         <props>        
+	              <prop key="input.encoding">utf-8</prop>        
+	              <prop key="output.encoding">utf-8</prop>            
+	         </props>        
+	    </property>                 
+	 </bean>
+    <!-- FreeMarker环境配置>
+    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" -->
+        <!-- freemarker模板位置 >
+        <property name="templateLoaderPath" value="/WEB-INF/views/"/>
+    </bean-->
+    
+    <!-- FreeMarker视图解析 >
+    <bean id="freeMarkerViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="cache" value="true"/>
+        <property name="prefix" value="/"/>
+        <property name="suffix" value=".ftl"/>
+    </bean-->	 
+	 <!-- 多视图解析器配置 -->  
+	<bean id="viewResolver"  class="com.enation.framework.web.mvc.MultiViewResover">  
+			<property name="resolvers">  
+			   <map>  
+			         <entry key="jsp">  
+			         		<!-- 定义JSP视图解析器--> 
+						     <bean id="jspViewResolver"
+						          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+						          p:prefix="/WEB-INF/views/"
+						          p:suffix=".jsp" 
+						          p:order="1"/>
+			         </entry>  
+			         <entry key="html">  
+			         		<!-- 定义Html视图解析器--> 
+						     <bean id="htmlViewResolver"
+						          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+						          p:prefix="/WEB-INF/views/"
+						          p:suffix=".html" 
+						          p:order="2"/>
+			         </entry>  
+			         <!--
+			         <entry key="ftl">  
+							     FreeMarker视图解析
+							    <bean id="freeMarkerViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+							        <property name="cache" value="true"/>
+							        <property name="prefix" value="/"/>
+							        <property name="suffix" value=".ftl"/>
+							    </bean>	 
+			         </entry>  
+			          -->
+			         <entry key="vm">  
+			         		<!-- velocity视图解析器 --> 
+							<bean id="velocityViewResolver"
+								class="org.springframework.web.servlet.view.velocity.VelocityViewResolver" p:order="1">
+								<property name="cache" value="true"/>  
+								<property name="prefix" value="/" />
+								<property name="suffix" value=".vm"/>
+								<!--  property name="toolboxConfigLocation" value="/WEB-INF/classes/config/velocity-toolbox.xml" /-->
+							    <!-- property name="viewClass" value="com.doadway.common.web.VelocityToolboxViewExt" / -->
+								<property name="contentType" value="text/html;charset=UTF-8" />
+								<property name="requestContextAttribute" value="request"/> 
+								<property name="dateToolAttribute" value="date" />
+								<property name="exposeSpringMacroHelpers" value="true" />
+								<property name="exposeRequestAttributes" value="true"></property>
+							</bean>
+			          </entry>  
+			   </map>  
+			</property>  
+    </bean>  
+
+	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
+ 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="webBindingInitializer">
+			<bean class="com.enation.framework.web.mvc.DateConverter"/>
+		</property>
+		<property name="messageConverters">
+			 <list>
+	            <bean id="utf8StringHttpMessageConverter"  class="com.enation.framework.web.mvc.UTF8StringHttpMessageConverter" />
+	            <!-- json转换器 -->
+                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" >
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value>text/html;charset=UTF-8</value>
+                        </list>
+                    </property>
+                </bean>
+	        </list>
+		</property>
+		
+	</bean>   	 
+    	<!-- Spring mvc 国际化配置 采用cookie保存机制 -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<property name="cookieName" value="clientlanguage"/>
+		<property name="cookieMaxAge" value="-1"/>
+	</bean>
+    <!-- Changes the locale when a 'locale' request parameter is sent; e.g. /?locale=de -->  
+	<mvc:interceptors>  
+    	<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />  
+	    <!-- <bean class="com.enation.eop.processor.core.EopPermissionInterceptor" />  --> 
+	</mvc:interceptors>  
+</beans>

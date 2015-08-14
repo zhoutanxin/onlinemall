@@ -1,0 +1,2 @@
+user.name=用户名
+user.pwd =密码
