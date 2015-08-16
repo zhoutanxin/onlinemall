@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -21,6 +22,7 @@ import com.enation.app.base.core.service.IDataSourceCreator;
 import com.enation.eop.sdk.context.EopSetting;
 import com.enation.framework.action.WWAction;
 import com.enation.framework.util.FileUtil;
+import com.enation.framework.util.PropertiesUtil;
 import com.enation.framework.util.StringUtil;
 /**
  * 安装action
@@ -98,8 +100,8 @@ public class EopInstallAction extends WWAction {
 		Properties props=System.getProperties();  
 		this.osVersion = props.getProperty("os.name")+"("+props.getProperty("os.version")+")";
 		this.javaVersion = props.getProperty("java.version");
-		this.getModel().put("osVersion", this.osVersion );
-		this.getModel().put("javaVersion", this.javaVersion );
+//		this.getModel().put("osVersion", this.osVersion );
+//		this.getModel().put("javaVersion", this.javaVersion );
 		return "install/step3";
 	}
 	@RequestMapping("install/success")
@@ -237,13 +239,15 @@ public class EopInstallAction extends WWAction {
 	
 	@RequestMapping("install/doInstall.json")
 	@ResponseBody	
-	public String doInstall(){
+	public String doInstall(EopInstallAction intallInfo){
 		try{
 			//saas模式可以自定义域名
+//			uname=eopInstallAction.getUname();
+//			pwd=eopInstallAction.getPwd();
 			if("2".equals(EopSetting.RUNMODE)){
-				eopInstallManager.install(uname,pwd,domain,productid);
+				eopInstallManager.install(intallInfo.uname,pwd,domain,productid);
 			}else{
-				eopInstallManager.install(uname,pwd,"localhost",productid);
+				eopInstallManager.install(intallInfo.uname,intallInfo.pwd,"localhost",intallInfo.productid);
 			}
 			this.json="{result:1}";
 		}catch (RuntimeException e) {
@@ -376,7 +380,7 @@ public class EopInstallAction extends WWAction {
 	public void setDbhost(String dbhost) {
 		this.dbhost = dbhost;
 	}
-
+	@ModelAttribute
 	public String getUname() {
 		return uname;
 	}
@@ -384,7 +388,7 @@ public class EopInstallAction extends WWAction {
 	public void setUname(String uname) {
 		this.uname = uname;
 	}
-
+	@ModelAttribute
 	public String getPwd() {
 		return pwd;
 	}
@@ -394,7 +398,7 @@ public class EopInstallAction extends WWAction {
 		this.pwd = pwd;
 	}
 
-
+	@ModelAttribute
 	public String getDbtype() {
 		return dbtype;
 	}
@@ -404,7 +408,7 @@ public class EopInstallAction extends WWAction {
 		this.dbtype = dbtype;
 	}
 
-
+	@ModelAttribute
 	public String getDbname() {
 		return dbname;
 	}
@@ -424,7 +428,7 @@ public class EopInstallAction extends WWAction {
 		this.eopInstallManager = eopInstallManager;
 	}
 
-
+	@ModelAttribute
 	public String getOsVersion() {
 		return osVersion;
 	}
@@ -434,7 +438,7 @@ public class EopInstallAction extends WWAction {
 		this.osVersion = osVersion;
 	}
 
-
+	@ModelAttribute
 	public String getJavaVersion() {
 		return javaVersion;
 	}
@@ -444,7 +448,7 @@ public class EopInstallAction extends WWAction {
 		this.javaVersion = javaVersion;
 	}
 
-
+	@ModelAttribute
 	public String getDomain() {
 		return domain;
 	}
@@ -454,7 +458,7 @@ public class EopInstallAction extends WWAction {
 		this.domain = domain;
 	}
 
-
+	@ModelAttribute("productid")
 	public String getProductid() {
 		return productid;
 	}
@@ -484,7 +488,7 @@ public class EopInstallAction extends WWAction {
 		this.dataSource = dataSource;
 	}
 
-
+	@ModelAttribute
 	public String getStaticdomain() {
 		return staticdomain;
 	}
@@ -494,7 +498,7 @@ public class EopInstallAction extends WWAction {
 		this.staticdomain = staticdomain;
 	}
 
-
+	@ModelAttribute
 	public String getStaticpath() {
 		return staticpath;
 	}
@@ -504,7 +508,7 @@ public class EopInstallAction extends WWAction {
 		this.staticpath = staticpath;
 	}
 
-
+	@ModelAttribute
 	public int getResourcemode() {
 		return resourcemode;
 	}
@@ -514,7 +518,7 @@ public class EopInstallAction extends WWAction {
 		this.resourcemode = resourcemode;
 	}
 
-
+	@ModelAttribute
 	public String getSolutionpath() {
 		return solutionpath;
 	}

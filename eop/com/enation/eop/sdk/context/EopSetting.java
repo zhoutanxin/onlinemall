@@ -24,7 +24,7 @@ import com.enation.framework.util.StringUtil;
 public class EopSetting {
 	
 	//是否为测试模式
-	public static boolean TEST_MODE =false; 
+	public static boolean TEST_MODE =true; 
 	
 	
 	//EOP服器根
@@ -34,7 +34,8 @@ public class EopSetting {
 	/*
 	 * 图片服务器域名
 	 */
-	public static String IMG_SERVER_DOMAIN = "static.eop.com";
+//	public static String IMG_SERVER_DOMAIN = "static.eop.com";
+	public static String IMG_SERVER_DOMAIN = "http://localhost:8080/onlinemall";
 
 	/*
 	 * 图片服务器地址
@@ -113,7 +114,7 @@ public class EopSetting {
 	public static String VERSION =""; //版本
 	public static String PRODUCTID ="";
 	
-	public static String INSTALL_LOCK ="NO"; //是否已经安装
+	public static String INSTALL_LOCK ="YES"; //是否已经安装
 	
 	public static List<String> safeUrlList;
 	public static String BACKEND_PAGESIZE = "15";

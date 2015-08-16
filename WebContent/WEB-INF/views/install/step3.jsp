@@ -92,7 +92,7 @@ $(function(){
 </div>
 <div style="padding-left: 45px;"><h5 class="success"><br>请在下面建立商店管理员帐户：</h5></div>
 <div id="show">
-<form  action="install/installSuccess.${ext }" method="post" id="installFrm">
+<form  action="success.${ext }" method="post" id="installFrm">
 
 <table>
   <tbody>
@@ -107,8 +107,8 @@ $(function(){
     <th align="right" width="150px" scope="row"><label for="ipt_uname">解决方案：</label></th>
     <td width="200px">
 		<select name="productid">
-			<option value="neiyi">网络商店示例</option>
 			<option value="company">企业网站示例</option>
+			<option value="neiyi">网络商店示例</option>
 			<option value="digital">新潮电子网站示例</option>
 		</select>  	
 	</td>
