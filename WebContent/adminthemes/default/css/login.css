@@ -15,7 +15,7 @@ body{
 	width:600px;
 }
 .main .logo{
-	background:transparent url(../images/loginlogo.jpg) no-repeat scroll 0 0;
+	/*background:transparent url(../images/loginlogo.jpg) no-repeat scroll 0 0;*/
 	height:128px;
 	text-indent:-999999px;
 	width:233px;

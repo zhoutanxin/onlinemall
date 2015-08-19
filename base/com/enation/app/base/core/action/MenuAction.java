@@ -2,6 +2,10 @@ package com.enation.app.base.core.action;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.enation.eop.resource.IMenuManager;
 import com.enation.eop.resource.model.Menu;
 import com.enation.framework.action.WWAction;
@@ -11,6 +15,7 @@ import com.enation.framework.action.WWAction;
  * 2010-8-20下午12:36:03
  */
 public class MenuAction extends WWAction {
+	@Resource
 	private IMenuManager menuManager;
 	private List<Menu> menuList;
 	private Menu menu;
@@ -18,7 +23,7 @@ public class MenuAction extends WWAction {
 	private Integer id;
 	private Integer[] menu_ids;
 	private Integer[] menu_sorts;
-	
+	@RequestMapping("admin/menu")
 	public String list(){
 		menuList  = this.menuManager.getMenuTree(0);
 		return "list";

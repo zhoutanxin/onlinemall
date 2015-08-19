@@ -34,8 +34,7 @@ public class EopSetting {
 	/*
 	 * 图片服务器域名
 	 */
-//	public static String IMG_SERVER_DOMAIN = "static.eop.com";
-	public static String IMG_SERVER_DOMAIN = "http://localhost:8080/onlinemall";
+	public static String IMG_SERVER_DOMAIN = "static.eop.com";
 
 	/*
 	 * 图片服务器地址

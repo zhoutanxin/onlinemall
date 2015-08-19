@@ -21,7 +21,7 @@
 </head>
 <body>
 	<div id="head">
-		<div class="logo"><a href="#"><img src="${bklogo}"/></a><span class="version">v${version}</span></div>
+		<div class="logo"><a href="#"><%-- <img src="${bklogo}"/> --%></a><span class="version">v${version}</span></div>
 		<div class="top">
 			<div class="sysmenu">
 				<ul><li><a href='javascript:;' id='check_new_btn'>检查更新</a></li>

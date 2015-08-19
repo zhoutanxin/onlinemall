@@ -90,7 +90,7 @@ public  class WWAction {
 	}
 	 private HttpServletRequest request;
 	 private HttpServletResponse response;
-	 private  Map<String, Object> model;
+	 public  Map<String, Object> model;
 	 
 	 @ModelAttribute  
 	 protected Map<String, Object> setModel(Map<String, Object> model) {

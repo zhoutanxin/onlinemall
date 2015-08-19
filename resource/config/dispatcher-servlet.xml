@@ -72,18 +72,18 @@
 	         </props>        
 	    </property>                 
 	 </bean>
-    <!-- FreeMarker环境配置>
-    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" -->
-        <!-- freemarker模板位置 >
-        <property name="templateLoaderPath" value="/WEB-INF/views/"/>
-    </bean-->
+    <!-- FreeMarker环境配置-->
+    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" >
+        <!-- freemarker模板位置 -->
+        <property name="templateLoaderPath" value="/"/>
+    </bean>
     
-    <!-- FreeMarker视图解析 >
+    <!-- FreeMarker视图解析 -->
     <bean id="freeMarkerViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
         <property name="cache" value="true"/>
         <property name="prefix" value="/"/>
         <property name="suffix" value=".ftl"/>
-    </bean-->	 
+    </bean>	 
 	 <!-- 多视图解析器配置 -->  
 	<bean id="viewResolver"  class="com.enation.framework.web.mvc.MultiViewResover">  
 			<property name="resolvers">  
@@ -96,24 +96,24 @@
 						          p:suffix=".jsp" 
 						          p:order="1"/>
 			         </entry>  
-			         <entry key="html">  
+			         <entry key="html1">  
 			         		<!-- 定义Html视图解析器--> 
 						     <bean id="htmlViewResolver"
 						          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 						          p:prefix="/WEB-INF/views/"
-						          p:suffix=".html" 
+						          p:suffix=".html1" 
 						          p:order="2"/>
 			         </entry>  
-			         <!--
-			         <entry key="ftl">  
-							     FreeMarker视图解析
+			        
+			         <entry key="html">  
+							      <!--FreeMarker视图解析-->
 							    <bean id="freeMarkerViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
 							        <property name="cache" value="true"/>
 							        <property name="prefix" value="/"/>
-							        <property name="suffix" value=".ftl"/>
+							        <property name="suffix" value=".html"/>
 							    </bean>	 
 			         </entry>  
-			          -->
+			          
 			         <entry key="vm">  
 			         		<!-- velocity视图解析器 --> 
 							<bean id="velocityViewResolver"

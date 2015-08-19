@@ -10,6 +10,7 @@ import com.enation.app.base.core.service.auth.IAdminUserManager;
 import com.enation.app.base.core.service.auth.IPermissionManager;
 import com.enation.eop.processor.AbstractFacadeProcessor;
 import com.enation.eop.processor.FacadePage;
+import com.enation.eop.processor.core.ContextType;
 import com.enation.eop.processor.core.Response;
 import com.enation.eop.processor.core.StringResponse;
 import com.enation.eop.resource.IMenuManager;
@@ -30,6 +31,7 @@ public class MenuJsonGetter extends AbstractFacadeProcessor {
 		Response response = new StringResponse();
 		String menu = getMenuJson();
 		response.setContent(menu);
+		response.setContentType(ContextType.JAVASCRIPT);
 		return response;
 	}
 	
