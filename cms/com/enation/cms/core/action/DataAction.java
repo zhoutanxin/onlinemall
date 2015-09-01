@@ -3,6 +3,11 @@ package com.enation.cms.core.action;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.enation.app.base.core.model.MultiSite;
 import com.enation.app.base.core.service.IMultiSiteManager;
 import com.enation.cms.core.model.DataCat;
@@ -20,12 +25,19 @@ import com.enation.framework.action.WWAction;
  * 
  * @author kingapex 2010-7-5上午11:22:57
  */
+@Controller
+@RequestMapping("/cms/admin/data")
 public class DataAction extends WWAction {
 
+	@Autowired
 	private IDataFieldManager dataFieldManager;
+	@Autowired
 	private IDataCatManager dataCatManager;
+	@Autowired
 	private IDataManager dataManager;
+	@Autowired
 	private ArticlePluginBundle articlePluginBundle;
+	@Autowired
 	private IMultiSiteManager multiSiteManager;
 	private Integer dataid;
 	private Integer catid;
@@ -55,7 +67,7 @@ public class DataAction extends WWAction {
 
 		return this.JSON_MESSAGE;
 	}
-
+	@RequestMapping("add")
 	public String add() {
 		this.isEdit = false;
 		this.cat = this.dataCatManager.get(catid);
@@ -66,7 +78,7 @@ public class DataAction extends WWAction {
 		for (DataField field : fieldList) {
 			field.setInputHtml(articlePluginBundle.onDisplay(field, null));
 		}
-		return "input";
+		return "cms/admin/article/input.html";
 	}
 
 	/**
@@ -92,8 +104,10 @@ public class DataAction extends WWAction {
 		this.json = "{result:0}";
 		return this.JSON_MESSAGE;
 	}
-
-	public String edit() {
+	@RequestMapping("edit")
+	public String edit(@RequestParam Integer catid,@RequestParam Integer dataid) {
+		this.catid=catid;
+		this.dataid=dataid;
 		this.isEdit = true;
 		this.article = this.dataManager.get(dataid, catid, false);
 		if (owner(this.article.get("site_code"))) {
@@ -106,7 +120,7 @@ public class DataAction extends WWAction {
 				field.setInputHtml(articlePluginBundle.onDisplay(field, article
 						.get(field.getEnglish_name())));
 			}
-			return "input";
+			return "cms/admin/article/input.html";
 		} else {
 			this.msgs.add("非本站内容，不能编辑！");
 			this.urls.put("文章列表", "data!list.do?catid=" + catid);
@@ -117,7 +131,7 @@ public class DataAction extends WWAction {
 	public String saveAdd() {
 		this.dataManager.add(modelid, catid);
 		this.msgs.add("文章添加成功");
-		this.urls.put("文章列表", "data!list.do?catid=" + catid);
+		this.urls.put("文章列表", "data/list.do?catid=" + catid);
 		return this.MESSAGE;
 	}
 
@@ -137,17 +151,22 @@ public class DataAction extends WWAction {
 	public void setSite(EopSite site) {
 		this.site = site;
 	}
-
-	public String list() {
+@RequestMapping("list")
+	public String list(@RequestParam Integer catid) {
+		this.catid=catid;
 		site = EopContext.getContext().getCurrentSite();
 		String term = null;
 		if(this.searchText!=null)
 			term = "and " + this.searchField + " like '%" + this.searchText + "%'"; 
-		this.webpage = this.dataManager.listAll(catid, term, null, false, this
+		this.webpage = this.dataManager.listAll(this.catid, term, null, false, this
 				.getPage(), this.getPageSize());
-		cat = this.dataCatManager.get(catid);
+		cat = this.dataCatManager.get(this.catid);
 		fieldList = this.dataFieldManager.listIsShow(cat.getModel_id());
-		return "list";
+		this.model.put("cat", cat);
+		this.model.put("fieldList", fieldList);
+		this.model.put("catid", catid);
+		this.model.put("webpage", this.webpage);
+		return "/cms/admin/article/list";
 	}
 
 	public String dlgList() {

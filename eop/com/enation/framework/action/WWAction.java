@@ -26,9 +26,9 @@ public  class WWAction {
 
 	protected Map urls = new HashMap();
 
-	protected static final String MESSAGE = "message";
+	protected static final String MESSAGE = "admin/message";
 
-	protected static final String JSON_MESSAGE = "json_message";
+	protected static final String JSON_MESSAGE = "admin/json_message";
 
 	
 

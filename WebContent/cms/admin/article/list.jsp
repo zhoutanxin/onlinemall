@@ -2,11 +2,11 @@
 <%@ include file="/commons/taglibs.jsp"%>
 <c:set var="fieldList" value="${fieldList}" />
 <div class="grid">
-	<form action="data!list.do" method="post">
+	<form action="list.do" method="post">
 		<input type="hidden" name="catid" value="${catid }"/>
 		<div class="toolbar">
 			<ul>
-				<li><a href="data!add.do?catid=${catid}">添加</a></li>
+				<li><a href="add.do?catid=${catid}">添加</a></li>
 				<li><a href="javascript:;" id="sortBtn">保存排序</a></li>
 				<li>关键字：<input type="text" name="searchText" value="${searchTitle }" /></li>
 				<li>
@@ -42,10 +42,10 @@
   				<td><c:if test="${article.cat_id!=catid}">${article.cat_name }</c:if></td>
   				<td><input type="text" style="width:50px" name="sorts" value="${article.sort }" /></td>
   				<td><fmt:formatDate value="${article.add_time}" pattern="yyyy-MM-dd HH:mm:ss"/> </td>
-	    		<td><a href="data!edit.do?dataid=${article.id }&catid=${catid}"><img src="images/transparent.gif" class="modify"></a></td>
+	    		<td><a href="edit.do?dataid=${article.id }&catid=${catid}"><img src="/cms/admin/images/transparent.gif" class="modify"></a></td>
 	    		<td>
 	    			<c:if test="${article.sys_lock != 1 }">
-	    				<a href="data!delete.do?dataid=${article.id }&catid=${catid}" onclick="javascript:return confirm('确定删除此文章吗?');"><img src="images/transparent.gif" class="delete"></a>
+	    				<a href="delete.do?dataid=${article.id }&catid=${catid}" onclick="javascript:return confirm('确定删除此文章吗?');"><img src="images/transparent.gif" class="delete"></a>
 					</c:if>
 				</td>
 			</grid:body>
