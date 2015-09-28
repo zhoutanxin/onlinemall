@@ -42,10 +42,10 @@
   				<td><c:if test="${article.cat_id!=catid}">${article.cat_name }</c:if></td>
   				<td><input type="text" style="width:50px" name="sorts" value="${article.sort }" /></td>
   				<td><fmt:formatDate value="${article.add_time}" pattern="yyyy-MM-dd HH:mm:ss"/> </td>
-	    		<td><a href="edit.do?dataid=${article.id }&catid=${catid}"><img src="/cms/admin/images/transparent.gif" class="modify"></a></td>
+	    		<td><a href="edit.do?dataid=${article.id }&catid=${catid}"><img src="../images/transparent.gif" class="modify"></a></td>
 	    		<td>
 	    			<c:if test="${article.sys_lock != 1 }">
-	    				<a href="delete.do?dataid=${article.id }&catid=${catid}" onclick="javascript:return confirm('确定删除此文章吗?');"><img src="images/transparent.gif" class="delete"></a>
+	    				<a href="delete.do?dataid=${article.id }&catid=${catid}" onclick="javascript:return confirm('确定删除此文章吗?');"><img src="../images/transparent.gif" class="delete"></a>
 					</c:if>
 				</td>
 			</grid:body>

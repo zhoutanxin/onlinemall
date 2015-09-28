@@ -96,25 +96,25 @@
 						          p:suffix=".jsp" 
 						          p:order="1"/>
 			         </entry>  
-			         <entry key="html1">  
+			         <entry key="html">  
 			         		<!-- 定义Html视图解析器--> 
 						     <bean id="htmlViewResolver"
 						          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
-						          p:prefix="/WEB-INF/views/"
-						          p:suffix=".html1" 
+						          p:prefix="/"
+						          p:suffix=".html" 
 						          p:order="2"/>
 			         </entry>  
 			        
-			         <entry key="html">  
+			         <entry key="ftl">  
 							      <!--FreeMarker视图解析-->
 							    <bean id="freeMarkerViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
 							        <property name="cache" value="true"/>
 							        <property name="prefix" value="/"/>
-							        <property name="suffix" value=".html"/>
+							        <property name="suffix" value=".ftl"/>
 							    </bean>	 
 			         </entry>  
 			          
-			         <entry key="vm">  
+			         <entry key="vm">
 			         		<!-- velocity视图解析器 --> 
 							<bean id="velocityViewResolver"
 								class="org.springframework.web.servlet.view.velocity.VelocityViewResolver" p:order="1">
